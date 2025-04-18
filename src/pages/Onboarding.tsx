@@ -9,7 +9,8 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 type OnboardingFormData = {
-  career: string;
+  name: string;
+  title: string;
   goals: string;
 };
 
@@ -17,7 +18,8 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const form = useForm<OnboardingFormData>({
     defaultValues: {
-      career: '',
+      name: '',
+      title: '',
       goals: ''
     }
   });
@@ -34,10 +36,11 @@ const Onboarding = () => {
       const { error } = await supabase
         .from('profiles')
         .update({
-          career: data.career,
+          name: data.name,
+          title: data.title,
           goals: data.goals
         })
-        .eq('id', userId);
+        .eq('user_id', userId);
 
       if (error) throw error;
 
@@ -59,11 +62,26 @@ const Onboarding = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="career"
-              rules={{ required: 'Career is required' }}
+              name="name"
+              rules={{ required: 'Name is required' }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Career</FormLabel>
+                  <FormLabel>Your Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="title"
+              rules={{ required: 'Title is required' }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Title/Position</FormLabel>
                   <FormControl>
                     <Input placeholder="Software Engineer" {...field} />
                   </FormControl>

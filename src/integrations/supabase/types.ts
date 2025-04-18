@@ -38,28 +38,40 @@ export type Database = {
       }
       profiles: {
         Row: {
-          career: string | null
-          email: string
-          first_name: string | null
+          created_at: string
+          email: string | null
           goals: string | null
           id: string
-          last_name: string | null
+          name: string | null
+          stripe_customer_id: string | null
+          subscription_status: string
+          title: string | null
+          updated_at: string
+          user_id: string
         }
         Insert: {
-          career?: string | null
-          email: string
-          first_name?: string | null
-          goals?: string | null
-          id: string
-          last_name?: string | null
-        }
-        Update: {
-          career?: string | null
-          email?: string
-          first_name?: string | null
+          created_at?: string
+          email?: string | null
           goals?: string | null
           id?: string
-          last_name?: string | null
+          name?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          goals?: string | null
+          id?: string
+          name?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

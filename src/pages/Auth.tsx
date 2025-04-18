@@ -11,8 +11,7 @@ import { useNavigate } from 'react-router-dom';
 type AuthFormData = {
   email: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
+  name?: string;
 };
 
 const Auth = () => {
@@ -22,8 +21,7 @@ const Auth = () => {
     defaultValues: {
       email: '',
       password: '',
-      firstName: '',
-      lastName: ''
+      name: ''
     }
   });
 
@@ -45,8 +43,7 @@ const Auth = () => {
           password: data.password,
           options: {
             data: {
-              first_name: data.firstName,
-              last_name: data.lastName
+              name: data.name,
             }
           }
         });
@@ -71,36 +68,20 @@ const Auth = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {!isLogin && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  rules={{ required: !isLogin }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  rules={{ required: !isLogin }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
+              <FormField
+                control={form.control}
+                name="name"
+                rules={{ required: !isLogin }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
             
             <FormField
