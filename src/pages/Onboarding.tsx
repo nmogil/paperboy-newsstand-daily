@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,13 +24,20 @@ const Onboarding = () => {
 
   const onSubmit = async (data: OnboardingFormData) => {
     try {
+      const session = await supabase.auth.getSession();
+      const userId = session.data.session?.user.id;
+
+      if (!userId) {
+        throw new Error('No authenticated user found');
+      }
+
       const { error } = await supabase
         .from('profiles')
         .update({
           career: data.career,
           goals: data.goals
         })
-        .eq('id', supabase.auth.getUser().data.user?.id);
+        .eq('id', userId);
 
       if (error) throw error;
 
