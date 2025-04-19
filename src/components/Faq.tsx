@@ -25,10 +25,18 @@ const FaqItem = ({
     >
       <div className="flex justify-between items-center w-full py-5 text-left font-display font-semibold my-0 mx-0 px-[20px]">
         <span>{question}</span>
-        <span>{isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+        <span className="transition-transform duration-700 ease-out">
+          {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </span>
       </div>
       
-      <div className={`overflow-hidden transition-all duration-700 ease-in-out ${isOpen ? 'max-h-96 opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
+      <div 
+        className={`overflow-hidden transition-all duration-700 ease-in-out ${
+          isOpen 
+            ? 'max-h-[300px] opacity-100 pb-5' 
+            : 'max-h-0 opacity-0'
+        }`}
+      >
         <p className="text-newsprint-light px-[20px] py-0">{answer}</p>
       </div>
     </div>
