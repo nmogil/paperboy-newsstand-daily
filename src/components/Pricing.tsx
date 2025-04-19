@@ -1,6 +1,6 @@
-
-import { Check } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Pricing = () => {
   const features = [
@@ -33,8 +33,11 @@ const Pricing = () => {
                 <span className="text-xl text-newsprint-light ml-1">/month</span>
               </div>
               
-              <Button className="btn-subscribe w-full mt-6">
-                Subscribe Now
+              <Button className="btn-subscribe w-full mt-6" asChild>
+                <Link to="/auth?mode=signup">
+                  Subscribe Now
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
               
               <p className="text-center text-newsprint/60 text-sm mt-4">
@@ -58,7 +61,7 @@ const Pricing = () => {
             
             <div className="bg-newsprint-accent/5 p-6 text-center">
               <p className="font-medium">
-                Not ready to commit? <a href="#" className="text-newsprint-red">Try a 7-day free trial</a>
+                Not ready to commit? <Link to="/auth?mode=signup" className="text-newsprint-red">Try a 7-day free trial</Link>
               </p>
             </div>
           </div>
