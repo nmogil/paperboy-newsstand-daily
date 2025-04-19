@@ -19,7 +19,7 @@ const FaqItem = ({
       </button>
       
       <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
-        <p className="text-newsprint-light">{answer}</p>
+        <p className="text-newsprint-light px-[20px] py-0">{answer}</p>
       </div>
     </div>;
 };
