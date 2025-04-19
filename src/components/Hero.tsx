@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Mail, Star, ArrowRight, Check } from 'lucide-react';
@@ -8,7 +7,7 @@ const Hero = () => {
   return (
     <section className="relative pt-16 pb-20 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto bg-paper-texture p-8 animate-fade-in">
+        <div className="max-w-4xl mx-auto bg-paper paper-texture p-8 animate-fade-in rounded-sm">
           {/* Masthead */}
           <div className="text-center border-b-2 border-newsprint pb-6 mb-8">
             <p className="text-sm font-mono mb-2">Vol. 1 No. 1 - Est. 2025</p>
@@ -55,7 +54,7 @@ const Hero = () => {
             </div>
 
             {/* Subscription Box */}
-            <div className="bg-paper-aged p-8 border-2 border-newsprint shadow-lg hover:shadow-xl transition-shadow">
+            <div className="paper-card p-8 border-2 border-newsprint/10 shadow-lg hover:shadow-xl transition-shadow rounded-sm">
               <div className="text-center mb-6">
                 <div className="bg-newsprint-red inline-flex items-center justify-center p-2 rounded-full mb-4">
                   <Mail className="w-8 h-8 text-paper" />
