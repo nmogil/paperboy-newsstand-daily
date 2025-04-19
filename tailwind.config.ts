@@ -67,6 +67,7 @@ export default {
 					aged: '#E8E1D1',
 					dark: '#D3CAB4',
 					texture: '#F5F2E8',
+					shadow: 'rgba(0, 0, 0, 0.05)'
 				},
 				newsprint: {
 					DEFAULT: '#1A1F2C',
