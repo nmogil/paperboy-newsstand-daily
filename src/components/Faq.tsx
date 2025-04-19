@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -27,7 +28,7 @@ const FaqItem = ({
         <span>{isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
       </div>
       
-      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
+      <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96 opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
         <p className="text-newsprint-light px-[20px] py-0">{answer}</p>
       </div>
     </div>
