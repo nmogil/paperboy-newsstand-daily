@@ -25,7 +25,7 @@ const Pricing = () => {
         </div>
         
         <div className="max-w-lg mx-auto">
-          <div className="bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform hover:-rotate-1 transition-transform duration-300">
+          <div className="bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform hover:-rotate-2 transition-transform duration-300">
             <div className="p-8 border-b border-newsprint/10">
               <h3 className="font-display text-3xl font-bold text-center mb-2">Premium Subscription</h3>
               <div className="flex justify-center items-baseline mb-4">
