@@ -62,17 +62,17 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Newspaper theme colors
 				paper: {
-					DEFAULT: '#F5F2E8', // Off-white paper color
-					aged: '#E8E1D1',    // Slightly aged paper
-					dark: '#D3CAB4',    // Darker aged paper
+					DEFAULT: '#F5F2E8',
+					aged: '#E8E1D1',
+					dark: '#D3CAB4',
+					texture: '#F5F2E8',
 				},
 				newsprint: {
-					DEFAULT: '#222222', // Dark newspaper text
-					light: '#333333',   // Slightly lighter text
-					accent: '#1A1F2C',  // Dark accent color
-					red: '#ea384c',     // Headline accent red
+					DEFAULT: '#1A1F2C',
+					light: '#333333',
+					accent: '#1A1F2C',
+					red: '#ea384c',
 				}
 			},
 			fontFamily: {
