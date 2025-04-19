@@ -25,44 +25,49 @@ const Pricing = () => {
         </div>
         
         <div className="max-w-lg mx-auto">
-          <div className="bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform hover:-rotate-2 transition-transform duration-300">
-            <div className="p-8 border-b border-newsprint/10">
-              <h3 className="font-display text-3xl font-bold text-center mb-2">Premium Subscription</h3>
-              <div className="flex justify-center items-baseline mb-4">
-                <span className="text-5xl font-display font-bold">$20</span>
-                <span className="text-xl text-newsprint-light ml-1">/month</span>
+          <div className="relative">
+            <div className="absolute inset-0 transition-all duration-300 group-hover:translate-x-2 group-hover:translate-y-2 bg-paper border border-newsprint/10 rounded-sm -rotate-2" />
+            <div className="absolute inset-0 transition-all duration-300 group-hover:translate-x-1 group-hover:translate-y-1 bg-paper border border-newsprint/10 rounded-sm -rotate-1" />
+            
+            <div className="group relative bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform hover:-rotate-2 transition-all duration-300">
+              <div className="p-8 border-b border-newsprint/10">
+                <h3 className="font-display text-3xl font-bold text-center mb-2">Premium Subscription</h3>
+                <div className="flex justify-center items-baseline mb-4">
+                  <span className="text-5xl font-display font-bold">$20</span>
+                  <span className="text-xl text-newsprint-light ml-1">/month</span>
+                </div>
+                
+                <Button className="btn-subscribe w-full mt-6" asChild>
+                  <Link to="/auth?mode=signup">
+                    Subscribe Now
+                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                
+                <p className="text-center text-newsprint/60 text-sm mt-4">
+                  Billed monthly. Cancel anytime.
+                </p>
               </div>
               
-              <Button className="btn-subscribe w-full mt-6" asChild>
-                <Link to="/auth?mode=signup">
-                  Subscribe Now
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
+              <div className="p-8">
+                <h4 className="font-display text-lg font-bold mb-4 text-center">Everything you need to stay informed:</h4>
+                <ul className="space-y-3">
+                  {features.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <div className="flex-shrink-0 h-6 w-6 rounded-full bg-newsprint-red/10 flex items-center justify-center mr-3">
+                        <Check className="h-4 w-4 text-newsprint-red" />
+                      </div>
+                      <span className="text-newsprint-light">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               
-              <p className="text-center text-newsprint/60 text-sm mt-4">
-                Billed monthly. Cancel anytime.
-              </p>
-            </div>
-            
-            <div className="p-8">
-              <h4 className="font-display text-lg font-bold mb-4 text-center">Everything you need to stay informed:</h4>
-              <ul className="space-y-3">
-                {features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-newsprint-red/10 flex items-center justify-center mr-3">
-                      <Check className="h-4 w-4 text-newsprint-red" />
-                    </div>
-                    <span className="text-newsprint-light">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="bg-newsprint-accent/5 p-6 text-center">
-              <p className="font-medium">
-                Not ready to commit? <Link to="/auth?mode=signup" className="text-newsprint-red">Try a 7-day free trial</Link>
-              </p>
+              <div className="bg-newsprint-accent/5 p-6 text-center">
+                <p className="font-medium">
+                  Not ready to commit? <Link to="/auth?mode=signup" className="text-newsprint-red">Try a 7-day free trial</Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
