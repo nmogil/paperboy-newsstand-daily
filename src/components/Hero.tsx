@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Mail, Star, ArrowRight, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -82,10 +83,12 @@ const Hero = () => {
                 />
                 <Button 
                   className="w-full h-12 text-xl font-bold bg-newsprint-red hover:bg-newsprint-red/90 text-paper group transition-all duration-300"
-                  onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  asChild
                 >
-                  Start Your Trial Now
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <Link to="/auth?mode=signup">
+                    Start Your Trial Now
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </Button>
                 <p className="text-center text-sm text-newsprint-light">
                   7-day free trial • Cancel anytime • Money-back guarantee

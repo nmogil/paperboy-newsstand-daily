@@ -1,6 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CallToAction = () => {
   return (
@@ -38,10 +39,12 @@ const CallToAction = () => {
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button 
               className="bg-newsprint-red hover:bg-newsprint-red/90 text-white px-8 py-6 text-lg flex items-center justify-center group"
-              onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+              asChild
             >
-              Start Your Free Trial
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              <Link to="/auth?mode=signup">
+                Start Your Free Trial
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </div>
           
