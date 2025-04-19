@@ -1,3 +1,4 @@
+
 import { Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -25,11 +26,13 @@ const Pricing = () => {
         </div>
         
         <div className="max-w-lg mx-auto">
-          <div className="relative">
-            <div className="absolute inset-0 transition-all duration-300 group-hover:translate-x-2 group-hover:translate-y-2 bg-paper border border-newsprint/10 rounded-sm -rotate-2" />
-            <div className="absolute inset-0 transition-all duration-300 group-hover:translate-x-1 group-hover:translate-y-1 bg-paper border border-newsprint/10 rounded-sm -rotate-1" />
+          <div className="relative group">
+            {/* Stack layers that appear on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-4 group-hover:translate-y-4 bg-paper border border-newsprint/10 rounded-sm -rotate-3" />
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-2 group-hover:translate-y-2 bg-paper border border-newsprint/10 rounded-sm -rotate-2" />
             
-            <div className="group relative bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform hover:-rotate-2 transition-all duration-300">
+            {/* Main card */}
+            <div className="relative bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden transform group-hover:-rotate-1 transition-all duration-300">
               <div className="p-8 border-b border-newsprint/10">
                 <h3 className="font-display text-3xl font-bold text-center mb-2">Premium Subscription</h3>
                 <div className="flex justify-center items-baseline mb-4">
@@ -77,3 +80,4 @@ const Pricing = () => {
 };
 
 export default Pricing;
+
