@@ -22,15 +22,15 @@ export default {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
-				background: '#f3ecd7',
-				foreground: '#1A1F2C',
+				background: 'hsl(var(--background))',
+				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#101014',
-					foreground: '#FAF0E6'
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
-					DEFAULT: '#c9bc9c',
-					foreground: '#181818'
+					DEFAULT: 'hsl(var(--secondary))',
+					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -38,19 +38,19 @@ export default {
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
-					foreground: '#85755c'
+					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: '#191414',
-					foreground: '#f3ecd7'
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
 				},
 				card: {
-					DEFAULT: '#f9f6ee',
-					foreground: '#191414'
+					DEFAULT: 'hsl(var(--card))',
+					foreground: 'hsl(var(--card-foreground))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -63,23 +63,22 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				paper: {
-					DEFAULT: '#f3ecd7',
-					aged: '#ede3c5',
-					dark: '#cab97d',
-					texture: '#f3ecd7',
+					DEFAULT: '#F5F2E8',
+					aged: '#E8E1D1',
+					dark: '#D3CAB4',
+					texture: '#F5F2E8',
 				},
 				newsprint: {
 					DEFAULT: '#1A1F2C',
 					light: '#333333',
 					accent: '#1A1F2C',
-					red: '#c1542a',
+					red: '#ea384c',
 				}
 			},
 			fontFamily: {
-				'headline': ['UnifrakturCook', 'cursive'],
-				'serif': ['Libre Baskerville', 'serif'],
+				'serif': ['Georgia', 'Times New Roman', 'serif'],
 				'display': ['Playfair Display', 'Georgia', 'serif'],
-				'mono': ['"IM Fell English SC"', 'Courier New', 'monospace'],
+				'mono': ['Courier New', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -113,7 +112,7 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'paper-flutter': 'paper-flutter 4s ease-in-out infinite',
 				'slide-up': 'slide-up 0.5s ease-out',
-				'fade-in': 'fade-in 1.5s cubic-bezier(0.21,0.8,0.35,1.0)'
+				'fade-in': 'fade-in 0.8s ease-out'
 			},
 			backgroundImage: {
 				'paper-texture': "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmZmZmMjAiPjwvcmVjdD4KPHBhdGggZD0iTTAgNUw1IDBaTTYgNEw0IDZaTS0xIDFMMSAtMVoiIHN0cm9rZT0iIzIyMjIyMjA1IiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD4KPC9zdmc+')",

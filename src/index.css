@@ -3,31 +3,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Libre+Baskerville:wght@400;700&display=swap');
-
 @layer base {
   :root {
     --background: 39 38% 92%;
     --foreground: 20 33% 8%;
+
     --card: 37 38% 92%;
     --card-foreground: 20 33% 8%;
+
     --popover: 37 38% 92%;
     --popover-foreground: 20 33% 8%;
+
     --primary: 0 68% 58%;
     --primary-foreground: 37 38% 98%;
+
     --secondary: 37 15% 85%;
     --secondary-foreground: 20 33% 8%;
+
     --muted: 37 15% 85%;
     --muted-foreground: 215.4 16.3% 46.9%;
+
     --accent: 0 68% 58%;
     --accent-foreground: 37 38% 98%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 37 38% 98%;
-    --border: 40 17% 80%;
+
+    --border: 20 20% 80%;
     --input: 20 20% 80%;
     --ring: 20 33% 8%;
+
     --radius: 0.125rem;
+
     --sidebar-background: 37 38% 92%;
     --sidebar-foreground: 20 33% 8%;
     --sidebar-primary: 0 68% 58%;
@@ -38,26 +45,65 @@
     --sidebar-ring: 0 68% 58%;
   }
 
+  .dark {
+    --background: 20 33% 8%;
+    --foreground: 37 38% 92%;
+
+    --card: 20 33% 10%;
+    --card-foreground: 37 38% 92%;
+
+    --popover: 20 33% 10%;
+    --popover-foreground: 37 38% 92%;
+
+    --primary: 0 68% 45%;
+    --primary-foreground: 37 38% 98%;
+
+    --secondary: 20 10% 15%;
+    --secondary-foreground: 37 38% 92%;
+
+    --muted: 20 10% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 0 68% 45%;
+    --accent-foreground: 37 38% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 37 38% 98%;
+
+    --border: 20 15% 25%;
+    --input: 20 15% 25%;
+    --ring: 37 38% 85%;
+
+    --sidebar-background: 20 33% 10%;
+    --sidebar-foreground: 37 38% 92%;
+    --sidebar-primary: 0 68% 45%;
+    --sidebar-primary-foreground: 37 38% 98%;
+    --sidebar-accent: 20 10% 15%;
+    --sidebar-accent-foreground: 37 38% 92%;
+    --sidebar-border: 20 15% 25%;
+    --sidebar-ring: 0 68% 45%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
+
   body {
-    background-color: #f3ecd7;
-    @apply text-newsprint font-serif;
-    font-family: 'Libre Baskerville', Georgia, Times, 'Times New Roman', serif;
+    @apply bg-paper bg-paper-texture text-newsprint font-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'UnifrakturCook', 'Playfair Display', Garamond, serif;
-    @apply font-bold tracking-tight;
+    @apply font-display font-bold tracking-tight;
   }
 
   h1 {
-    @apply text-6xl md:text-7xl lg:text-8xl mb-4 leading-tight;
+    @apply text-5xl md:text-6xl lg:text-7xl mb-4 leading-tight;
   }
 
   h2 {
-    @apply text-3xl md:text-5xl mb-6 leading-tight;
+    @apply text-3xl md:text-4xl lg:text-5xl mb-6 leading-tight;
   }
 
   h3 {
@@ -73,51 +119,62 @@
   }
 }
 
-@layer base {
-  .masthead-border {
-    border-top: 4px double #191414;
-    border-bottom: 4px double #191414;
-    box-shadow: 0 1px 0 0 #cab97d, 0 -1px 0 0 #cab97d;
-    background: #f3ecd7;
-  }
-  .vintage-divider {
-    border-top: 2px solid #cab97d;
-    border-bottom: none;
-    margin: 2rem 0;
-  }
-}
-
 @layer components {
   .newspaper-column {
     @apply flex flex-col max-w-xl mx-auto;
   }
+
+  .newspaper-multi-column {
+    @apply columns-1 md:columns-2 lg:columns-3 gap-8 break-inside-avoid-column;
+  }
+
+  .newspaper-headline {
+    @apply font-display text-4xl md:text-5xl lg:text-6xl font-black text-newsprint-accent mb-4 leading-none tracking-tight;
+  }
+
+  .newspaper-subheading {
+    @apply font-display text-xl font-medium text-newsprint-light mb-6 border-b border-newsprint/30 pb-2;
+  }
+
+  .newspaper-lead {
+    @apply font-serif text-lg first-letter:text-4xl first-letter:font-bold first-letter:mr-1 first-letter:float-left first-letter:leading-none;
+  }
+
+  .newspaper-date {
+    @apply font-mono text-sm text-newsprint/70 mb-4;
+  }
+
+  .newspaper-stand {
+    @apply bg-gradient-to-b from-amber-800 to-amber-950 px-4 py-8 rounded shadow-xl relative;
+  }
+
+  .newspaper-issue {
+    @apply bg-paper p-6 border border-newsprint/10 shadow-md relative transition-all duration-300;
+  }
+
+  .newspaper-issue:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+
+  .newspaper-fold {
+    @apply absolute top-1/4 bottom-0 w-[1px] bg-gradient-to-b from-newsprint/5 to-newsprint/20;
+  }
+
+  .btn-subscribe {
+    @apply bg-newsprint-red text-white font-bold py-3 px-6 text-xl hover:bg-newsprint-red/90 transition-colors shadow-md border-0;
+  }
+  
+  .perspective-1000 {
+    perspective: 1000px;
+  }
 }
 
-/* Decorative font for super headline */
-.vintage-headline {
-  font-family: 'UnifrakturCook', 'Playfair Display', serif;
-  letter-spacing: 0.07em;
-  font-size: 4rem;
-  text-shadow: 1px 2px 0 #cab97d, 0 3px 8px #cab97d96;
-  color: #181410;
-  margin-bottom: 0.25rem;
-}
+@layer utilities {
+  .text-shadow {
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  }
 
-/* Secondary fancy letter for dropword */
-.vintage-dropword {
-  float: left;
-  font-size: 2.2rem;
-  font-family: 'UnifrakturCook', 'serif';
-  margin-right: 0.4em;
-  color: #cab97d;
-  text-shadow: 1px 1px #fff7e0;
+  .paper-texture {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23000000' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+  }
 }
-
-.vintage-border-label {
-  @apply uppercase text-xs font-mono tracking-widest;
-  letter-spacing: 0.13em;
-  color: #85755c;
-  margin-bottom: 0.5em;
-  margin-top: 0.5em;
-}
-
