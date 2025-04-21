@@ -1,101 +1,60 @@
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { CalendarDays, Mail, Star, ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
-    <section className="relative pt-16 pb-20 overflow-hidden">
+    <section className="relative pt-10 pb-14 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto bg-paper-texture p-8 animate-fade-in">
-          {/* Masthead */}
-          <div className="text-center border-b-2 border-newsprint pb-6 mb-8">
-            <p className="text-sm font-mono mb-2">Vol. 1 No. 1 - Est. 2025</p>
-            <h1 className="text-6xl md:text-8xl font-black font-display tracking-tight mb-2">
-              THE DAILY RESEARCHER
-            </h1>
-            <p className="text-lg font-serif italic">
-              "Delivering Knowledge to Your Doorstep"
-            </p>
+        {/* VINTAGE NEWSPAPER MASTHEAD */}
+        <div className="masthead-border py-6 px-3 rounded-t-lg shadow-md bg-paper-texture text-center relative mb-8 border-2 border-[#cab97d]">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-mono tracking-widest italic text-[#1A1F2C]/70">NY</span>
+            <span className="text-xs font-mono tracking-widest italic text-[#1A1F2C]/70">
+              Est. <span className="underline">2025</span>
+            </span>
           </div>
-
-          {/* Main Story */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div>
-              <h2 className="font-display text-4xl font-bold leading-tight mb-4">
-                Transform Your Research Journey with AI-Powered Daily Insights
-              </h2>
-              <div className="flex items-center gap-2 text-sm mb-4 font-mono">
-                <CalendarDays className="w-4 h-4" />
-                <span>April 19, 2025</span>
-                <span className="mx-2">|</span>
-                <Star className="w-4 h-4" />
-                <span>Featured Story</span>
-              </div>
-              <p className="text-lg leading-relaxed mb-6 first-letter:text-5xl first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:mt-1">
-                Stay ahead of your field with personalized research papers delivered daily. 
-                Join thousands of professionals who trust our AI-powered platform to curate 
-                the most relevant academic content.
-              </p>
-              
-              {/* Added Benefits List */}
-              <ul className="space-y-3 mb-6">
-                {[
-                  'Tailored to your research interests',
-                  'Save hours of manual searching',
-                  'Never miss important papers',
-                ].map((benefit, index) => (
-                  <li key={index} className="flex items-center gap-2 text-newsprint-light">
-                    <Check className="w-5 h-5 text-newsprint-red" />
-                    <span>{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Subscription Box */}
-            <div className="bg-paper-aged p-8 border-2 border-newsprint shadow-lg hover:shadow-xl transition-shadow">
-              <div className="text-center mb-6">
-                <div className="bg-newsprint-red inline-flex items-center justify-center p-2 rounded-full mb-4">
-                  <Mail className="w-8 h-8 text-paper" />
-                </div>
-                <h3 className="text-2xl font-display font-bold mb-2">
-                  LIMITED TIME OFFER
-                </h3>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-3xl font-display font-bold">$20</span>
-                  <span className="text-xl text-newsprint-light">/month</span>
-                </div>
-                <p className="text-newsprint-red font-bold mb-2">
-                  Save 50% - Regular price $40
-                </p>
-                <p className="text-sm text-newsprint-light italic mb-6">
-                  *Offer expires soon
-                </p>
-              </div>
-
-              <form className="space-y-4">
-                <Input 
-                  type="email" 
-                  placeholder="Enter your email address"
-                  className="h-12 text-lg bg-paper border-2 border-newsprint focus:ring-2 focus:ring-newsprint-red focus:border-newsprint-red"
-                />
-                <Button 
-                  className="w-full h-12 text-xl font-bold bg-newsprint-red hover:bg-newsprint-red/90 text-paper group transition-all duration-300"
-                  asChild
-                >
-                  <Link to="/auth?mode=signup">
-                    Start Your Trial Now
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-                <p className="text-center text-sm text-newsprint-light">
-                  7-day free trial • Cancel anytime • Money-back guarantee
-                </p>
-              </form>
-            </div>
+          <div>
+            <h1 className="vintage-headline">THE DAILY RESEARCHER</h1>
           </div>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-mono tracking-widest text-[#1A1F2C]/70">100 &#162;</span>
+            <span className="text-xs font-mono tracking-widest text-[#1A1F2C]/70">Vol. 1 No. 1</span>
+          </div>
+        </div>
+
+        {/* Tagline Section */}
+        <div className="text-center pb-3 -mt-2">
+          <div className="vintage-border-label mb-1">Family Library</div>
+          <p className="italic text-lg text-newsprint-light font-serif tracking-normal mb-2">
+            "For the distinguished reader or the particularly wealthy dunder-head."
+          </p>
+        </div>
+        <hr className="vintage-divider" />
+
+        {/* Welcome sub-headline */}
+        <div className="max-w-3xl mx-auto mb-8 text-center">
+          <h2 className="font-headline text-2xl md:text-4xl text-[#191414] tracking-widest mb-4" style={{ letterSpacing: '0.12em' }}>
+            Curated Academic Newsletters Delivered With 19th-Century Flair
+          </h2>
+          <span className="block text-base text-muted-foreground mb-2">
+            Save hours of manual searching — join the AI-powered library for daily discoveries.
+          </span>
+        </div>
+
+        {/* Subscription CTA */}
+        <div className="flex flex-col items-center mx-auto bg-[#ede3c5] border-2 border-[#cab97d] rounded-lg shadow-lg p-8 max-w-lg">
+          <div className="mb-2">
+            <span className="block font-headline text-xl md:text-2xl uppercase tracking-widest" style={{ letterSpacing: '0.15em' }}>
+              LIMITED TIME OFFER
+            </span>
+            <span className="block font-mono text-3xl font-bold text-[#1a1f2c] pt-1 pb-0">Only $20 <span className="text-base font-medium">/ month</span></span>
+            <span className="block text-sm text-newsprint-light italic pb-2">*Save 50% - Regular $40/mo</span>
+          </div>
+          <Button className="w-full mt-3 text-lg font-bold bg-[#cab97d] text-[#181410] hover:bg-[#e6dcc3] border-2 border-[#1A1F2C] uppercase tracking-wider" asChild>
+            <Link to="/auth?mode=signup">Start Your Free Trial</Link>
+          </Button>
+          <span className="block text-xs font-mono text-[#85755c] mt-4">No credit card required • Cancel anytime</span>
         </div>
       </div>
     </section>
