@@ -38,28 +38,30 @@ const Auth = () => {
         toast.success('Logged in successfully');
         navigate('/');
       } else {
-        const { error, data: authData } = await supabase.auth.signUp({
+        // For signup, make sure we're passing the name properly
+        const { error } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
           options: {
             data: {
-              name: data.name,
+              name: data.name || '', // Ensure name is never undefined
             }
           }
         });
 
         if (error) throw error;
         
-        toast.success('Account created successfully');
-        navigate('/onboarding');
+        toast.success('Account created successfully! Check your email for confirmation.');
+        toast.info('You will be redirected to the onboarding page once confirmed.');
       }
     } catch (error: any) {
+      console.error('Auth error:', error.message);
       toast.error(error.message || 'An error occurred');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-paper">
+    <div className="min-h-screen flex items-center justify-center bg-paper bg-paper-texture">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-bold text-center">
           {isLogin ? 'Login to Paperboy' : 'Sign Up for Paperboy'}
@@ -71,7 +73,7 @@ const Auth = () => {
               <FormField
                 control={form.control}
                 name="name"
-                rules={{ required: !isLogin }}
+                rules={{ required: !isLogin ? 'Name is required' : false }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
