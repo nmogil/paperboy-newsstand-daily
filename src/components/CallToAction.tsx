@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight, Check, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,8 +16,8 @@ const CallToAction = () => {
           
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 text-paper">
             Join{' '}
-            <span className="relative inline-flex items-center gap-2 bg-newsprint-red/10 px-3 py-2 rounded-xl text-inherit">
-              <Activity className="h-4 w-4 text-newsprint-red animate-pulse" />
+            <span className="relative inline-flex items-center gap-2 bg-newsprint-red text-paper px-3 py-1 rounded-lg">
+              <Activity className="h-4 w-4 text-paper animate-pulse" />
               <span className="animate-[pulse_2s_ease-in-out_infinite]">
                 {userCount.toLocaleString()}+
               </span>
