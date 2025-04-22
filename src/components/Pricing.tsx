@@ -1,3 +1,4 @@
+
 import { Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -20,12 +21,13 @@ const Pricing = () => {
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="newspaper-headline">Subscribe to Paperboy</h2>
           <p className="text-xl text-newsprint-light">
-            One simple plan. Subscribe today.
+            One simple plan. Cancel anytime.
           </p>
         </div>
         
         <div className="max-w-lg mx-auto">
           <div className="relative group perspective-1000">
+            {/* Stack layers that appear on hover - creating a uniform fan effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 origin-bottom 
                             group-hover:translate-y-6 group-hover:-translate-x-6 bg-paper border border-newsprint/10 
                             rounded-sm group-hover:-rotate-6 shadow-md transform scale-[0.97]" />
@@ -34,13 +36,14 @@ const Pricing = () => {
                             group-hover:translate-y-3 group-hover:-translate-x-3 bg-paper border border-newsprint/10 
                             rounded-sm group-hover:-rotate-3 shadow-md transform scale-[0.98]" />
             
+            {/* Main card */}
             <div className="relative bg-paper border border-newsprint/10 rounded-sm shadow-xl overflow-hidden 
                            transform transition-all duration-300 group-hover:rotate-1 group-hover:scale-[1.01] 
                            group-hover:translate-y-1 group-hover:translate-x-1 z-10">
               <div className="p-8 border-b border-newsprint/10">
                 <h3 className="font-display text-3xl font-bold text-center mb-2">Premium Subscription</h3>
                 <div className="flex justify-center items-baseline mb-4">
-                  <span className="text-5xl font-display font-bold">$10</span>
+                  <span className="text-5xl font-display font-bold">$20</span>
                   <span className="text-xl text-newsprint-light ml-1">/month</span>
                 </div>
                 
@@ -72,7 +75,7 @@ const Pricing = () => {
               
               <div className="bg-newsprint-accent/5 p-6 text-center">
                 <p className="font-medium">
-                  Questions? <Link to="#faq" className="text-newsprint-red">Check our FAQ</Link>
+                  Not ready to commit? <Link to="/auth?mode=signup" className="text-newsprint-red">Try a 7-day free trial</Link>
                 </p>
               </div>
             </div>
