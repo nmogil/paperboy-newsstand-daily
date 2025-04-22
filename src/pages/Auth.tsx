@@ -38,25 +38,27 @@ const Auth = () => {
         toast.success('Logged in successfully');
         navigate('/');
       } else {
-        // For signup, we store the name as a single field to match the database schema
         const { error } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
           options: {
             data: {
-              name: data.name || '', // This matches our profiles table schema
+              name: data.name || ''
             }
           }
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Signup error:', error);
+          throw error;
+        }
         
         toast.success('Account created successfully! Check your email for confirmation.');
         toast.info('You will be redirected to the onboarding page once confirmed.');
       }
     } catch (error: any) {
-      console.error('Auth error:', error.message);
-      toast.error(error.message || 'An error occurred');
+      console.error('Auth error:', error);
+      toast.error(error.message || 'An error occurred during authentication');
     }
   };
 
