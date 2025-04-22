@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useUserCount = () => {
-  const [count, setCount] = useState(10000);
+  const [count, setCount] = useState(10);
 
   useEffect(() => {
     // Get initial count
@@ -13,7 +13,7 @@ export const useUserCount = () => {
         .select('*', { count: 'exact', head: true });
       
       if (userCount !== null) {
-        setCount(10000 + userCount); // Add base number to actual count
+        setCount(10 + userCount); // Add base number to actual count
       }
     };
 
@@ -36,7 +36,7 @@ export const useUserCount = () => {
             .select('*', { count: 'exact', head: true });
           
           if (newCount !== null) {
-            setCount(10000 + newCount); // Add base number to actual count
+            setCount(10 + newCount); // Add base number to actual count
           }
         }
       )
