@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 
 type OnboardingFormData = {
   name: string;
@@ -52,66 +52,68 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-paper">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-        <h2 className="text-2xl font-bold text-center">
-          Complete Your Paperboy Profile
-        </h2>
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              rules={{ required: 'Name is required' }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="title"
-              rules={{ required: 'Title is required' }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your Title/Position</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Software Engineer" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="goals"
-              rules={{ required: 'Career goals are required' }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Career Goals</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Become an AI research expert" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <Button type="submit" className="w-full">
-              Complete Profile
-            </Button>
-          </form>
-        </Form>
+    <AuthenticatedLayout>
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
+          <h2 className="text-2xl font-bold text-center">
+            Complete Your Paperboy Profile
+          </h2>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                rules={{ required: 'Name is required' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="title"
+                rules={{ required: 'Title is required' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Title/Position</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Software Engineer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="goals"
+                rules={{ required: 'Career goals are required' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Career Goals</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Become an AI research expert" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button type="submit" className="w-full">
+                Complete Profile
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 

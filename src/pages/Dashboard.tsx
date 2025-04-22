@@ -1,8 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 
 type Profile = {
   id: string;
@@ -55,20 +55,19 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-paper">
-        <div className="text-xl">Loading...</div>
-      </div>
+      <AuthenticatedLayout>
+        <div className="flex items-center justify-center">
+          <div className="text-xl">Loading...</div>
+        </div>
+      </AuthenticatedLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-paper">
-      <div className="max-w-4xl mx-auto p-8">
+    <AuthenticatedLayout>
+      <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Your Dashboard</h1>
-          <Button variant="outline" onClick={handleLogout}>
-            Log Out
-          </Button>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -92,7 +91,7 @@ const Dashboard = () => {
           <p className="text-gray-500">No recommendations yet. Stay tuned!</p>
         </div>
       </div>
-    </div>
+    </AuthenticatedLayout>
   );
 };
 
