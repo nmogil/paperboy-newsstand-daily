@@ -13,7 +13,7 @@ const SupabaseNote = () => {
         const { data, error } = await supabase.auth.getSession();
         
         // Only show note if no session exists or there's an error with connection
-        setShowNote(!data.session || error);
+        setShowNote(!data.session || error !== null);
       } catch (err) {
         // If there's any error fetching the session, show the note
         setShowNote(true);
