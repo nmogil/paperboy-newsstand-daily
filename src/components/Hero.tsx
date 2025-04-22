@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CalendarDays, Mail, Star, ArrowRight, Check } from 'lucide-react';
@@ -61,17 +60,14 @@ const Hero = () => {
                   <Mail className="w-8 h-8 text-paper" />
                 </div>
                 <h3 className="text-2xl font-display font-bold mb-2">
-                  LIMITED TIME OFFER
+                  SPECIAL OFFER
                 </h3>
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-3xl font-display font-bold">$20</span>
+                  <span className="text-3xl font-display font-bold">$10</span>
                   <span className="text-xl text-newsprint-light">/month</span>
                 </div>
                 <p className="text-newsprint-red font-bold mb-2">
-                  Save 50% - Regular price $40
-                </p>
-                <p className="text-sm text-newsprint-light italic mb-6">
-                  *Offer expires soon
+                  Subscribe now for unlimited access
                 </p>
               </div>
 
@@ -86,13 +82,10 @@ const Hero = () => {
                   asChild
                 >
                   <Link to="/auth?mode=signup">
-                    Start Your Trial Now
+                    Subscribe Now
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
-                <p className="text-center text-sm text-newsprint-light">
-                  7-day free trial • Cancel anytime • Money-back guarantee
-                </p>
               </form>
             </div>
           </div>
