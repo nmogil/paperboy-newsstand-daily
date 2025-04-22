@@ -38,13 +38,13 @@ const Auth = () => {
         toast.success('Logged in successfully');
         navigate('/');
       } else {
-        // For signup, make sure we're passing the name properly
+        // For signup, we store the name as a single field to match the database schema
         const { error } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
           options: {
             data: {
-              name: data.name || '', // Ensure name is never undefined
+              name: data.name || '', // This matches our profiles table schema
             }
           }
         });
