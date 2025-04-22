@@ -1,9 +1,11 @@
-
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useUserCount } from '@/hooks/useUserCount';
 
 const CallToAction = () => {
+  const userCount = useUserCount();
+
   return (
     <section className="py-20 bg-newsprint text-paper relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
@@ -13,7 +15,7 @@ const CallToAction = () => {
           </span>
           
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 text-paper">
-            Join 10,000+ Researchers Who Trust Paperboy
+            Join {userCount.toLocaleString()}+ Researchers Who Trust Paperboy
           </h2>
           
           <p className="text-xl mb-8 text-paper-aged">
@@ -61,7 +63,6 @@ const CallToAction = () => {
         </div>
       </div>
       
-      {/* Enhanced background decoration */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-paper-aged"></div>
         <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-paper-aged"></div>
