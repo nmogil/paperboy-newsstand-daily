@@ -1,8 +1,8 @@
+
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Logo } from './Logo';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,9 +11,9 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-paper bg-paper-texture border-b border-newsprint/10 shadow-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center no-underline">
-            <Logo className="h-12 w-auto text-newsprint hover:text-newsprint-red transition-colors" />
-          </Link>
+          <div className="font-display text-4xl font-black tracking-tighter text-newsprint">
+            <span className="text-newsprint-red">P</span>aperboy
+          </div>
         </div>
 
         {/* Desktop navigation */}
