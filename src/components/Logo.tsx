@@ -4,26 +4,20 @@ import React from 'react';
 export const Logo = ({ className = "" }: { className?: string }) => {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox="0 0 800 400"
       className={className}
       role="img"
       aria-label="Paperboy logo"
     >
-      {/* Paper boy newspaper icon */}
       <path
-        d="M448 96h-64V64c0-35.3-28.7-64-64-64H64C28.7 0 0 28.7 0 64v256c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64zM64 40c13.2 0 24 10.8 24 24s-10.8 24-24 24-24-10.8-24-24 10.8-24 24-24zm384 280c0 4.4-3.6 8-8 8H72c-4.4 0-8-3.6-8-8V168c0-4.4 3.6-8 8-8h368c4.4 0 8 3.6 8 8v152z"
+        d="M260 50c-30 0-54.4 24.4-54.4 54.4 0 23 14.2 42.7 34.4 50.6v195h40V155c20.2-7.9 34.4-27.6 34.4-50.6C314.4 74.4 290 50 260 50zM466.7 200l-13.3-40h-80l-13.3 40h-43.4l66.7-200h60l66.7 200h-43.4zm-50-120l-26.7 80h53.3l-26.7-80zM600 200V0h40v200h-40z"
         fill="currentColor"
       />
-      {/* Text overlay/masthead */}
       <path
-        d="M128 216v96h256v-96H128zm32 64h-16v-32h16v32zm32 0h-16v-32h16v32zm32 0h-16v-32h16v32zm32 0h-16v-32h16v32zm32 0h-16v-32h16v32zm32 0h-16v-32h16v32z"
-        fill="currentColor"
-      />
-      {/* Text at top of newspaper */}
-      <path
-        d="M128 184h256v16H128z"
+        d="M180 120c0-22.1 17.9-40 40-40s40 17.9 40 40-17.9 40-40 40-40-17.9-40-40zm146.7 80H280v-40h46.7v40zm160 0h-46.7v-40H520v40z"
         fill="currentColor"
       />
     </svg>
   );
 };
+
