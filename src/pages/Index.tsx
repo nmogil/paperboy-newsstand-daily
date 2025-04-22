@@ -7,7 +7,6 @@ import Pricing from '@/components/Pricing';
 import Faq from '@/components/Faq';
 import CallToAction from '@/components/CallToAction';
 import Footer from '@/components/Footer';
-import SupabaseNote from '@/components/SupabaseNote';
 
 const Index = () => {
   return (
@@ -22,7 +21,6 @@ const Index = () => {
         <CallToAction />
       </main>
       <Footer />
-      <SupabaseNote />
     </div>
   );
 };
