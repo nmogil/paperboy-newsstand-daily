@@ -1,9 +1,25 @@
-
-import { Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Pricing = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+    
+    checkAuth();
+  }, []);
+  
   const features = [
     "Daily research paper recommendations",
     "AI-powered content curation",
@@ -15,15 +31,77 @@ const Pricing = () => {
     "Reading history and bookmarks"
   ];
   
+  const handleSubscribeClick = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Check if the user is logged in
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        // If not logged in, redirect to auth page
+        window.location.href = '/auth?mode=signup&redirect=pricing';
+        return;
+      }
+      
+      // User is logged in, create a checkout session
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
+      
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
+      }
+      
+      const data = await response.json();
+      
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error: any) {
+      console.error('Subscription error:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Could not initiate subscription',
+        variant: 'destructive',
+      });
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <section id="pricing" className="py-20 bg-paper-dark">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center mb-16">
+        <div className="max-w-4xl mx-auto text-center mb-8">
           <h2 className="newspaper-headline">Subscribe to Paperboy</h2>
           <p className="text-xl text-newsprint-light">
             One simple plan. Cancel anytime.
           </p>
         </div>
+        
+        {!isLoggedIn && (
+          <div className="max-w-lg mx-auto mb-8">
+            <Alert className="bg-newsprint-light/10 border-newsprint/20">
+              <Info className="h-4 w-4 text-newsprint-red" />
+              <AlertDescription>
+                You'll need to create an account or log in to complete your subscription.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
         
         <div className="max-w-lg mx-auto">
           <div className="relative group perspective-1000">
@@ -47,11 +125,13 @@ const Pricing = () => {
                   <span className="text-xl text-newsprint-light ml-1">/month</span>
                 </div>
                 
-                <Button className="btn-subscribe w-full mt-6" asChild>
-                  <Link to="/auth?mode=signup">
-                    Subscribe Now
-                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                <Button 
+                  className="btn-subscribe w-full mt-6" 
+                  onClick={handleSubscribeClick}
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Processing...' : 'Subscribe Now'}
+                  {!isLoading && <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />}
                 </Button>
                 
                 <p className="text-center text-newsprint/60 text-sm mt-4">

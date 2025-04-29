@@ -1,12 +1,11 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 
 type AuthFormData = {
@@ -16,7 +15,11 @@ type AuthFormData = {
 };
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode');
+  const redirect = searchParams.get('redirect');
+  
+  const [isLogin, setIsLogin] = useState(mode !== 'signup');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const form = useForm<AuthFormData>({
@@ -26,6 +29,11 @@ const Auth = () => {
       name: ''
     }
   });
+
+  // Update mode when URL changes
+  useEffect(() => {
+    setIsLogin(mode !== 'signup');
+  }, [mode]);
 
   const onSubmit = async (data: AuthFormData) => {
     try {
@@ -38,7 +46,15 @@ const Auth = () => {
         if (error) throw error;
         
         toast.success('Logged in successfully');
-        navigate('/');
+        
+        // Redirect to the specified redirect path or default
+        if (redirect === 'pricing') {
+          navigate('/subscribe');
+        } else if (redirect) {
+          navigate(`/${redirect}`);
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email: data.email,
@@ -55,8 +71,8 @@ const Auth = () => {
           throw error;
         }
         
-        toast.success('Account created successfully! Check your email for confirmation.');
-        toast.info('You will be redirected to the onboarding page once confirmed.');
+        toast.success('Account created successfully!');
+        navigate('/onboarding');
       }
     } catch (error: any) {
       console.error('Auth error:', error);
@@ -69,9 +85,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-paper bg-paper-texture">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-        <h2 className="text-2xl font-bold text-center">
+    <div className="min-h-screen flex items-center justify-center bg-paper-dark">
+      <div className="w-full max-w-md p-8 space-y-6 bg-paper shadow-md rounded-sm border border-newsprint/10">
+        <h2 className="text-2xl font-bold text-center font-display">
           {isLogin ? 'Login to Paperboy' : 'Sign Up for Paperboy'}
         </h2>
         
@@ -158,7 +174,13 @@ const Auth = () => {
         <div className="text-center">
           <Button 
             variant="ghost" 
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              const newMode = isLogin ? 'signup' : 'login';
+              const newParams = new URLSearchParams(searchParams);
+              newParams.set('mode', newMode);
+              navigate(`/auth?${newParams.toString()}`);
+            }}
           >
             {isLogin 
               ? 'Need an account? Sign Up' 

@@ -45,7 +45,7 @@ const Onboarding = () => {
       if (error) throw error;
 
       toast.success('Profile updated successfully');
-      navigate('/dashboard');
+      navigate('/#pricing');
     } catch (error: any) {
       toast.error(error.message || 'An error occurred');
     }
@@ -54,8 +54,8 @@ const Onboarding = () => {
   return (
     <AuthenticatedLayout>
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-          <h2 className="text-2xl font-bold text-center">
+        <div className="w-full max-w-md p-8 space-y-6 bg-paper shadow-md rounded-sm border border-newsprint/10">
+          <h2 className="text-2xl font-bold text-center font-display">
             Complete Your Paperboy Profile
           </h2>
           
@@ -107,7 +107,7 @@ const Onboarding = () => {
               />
               
               <Button type="submit" className="w-full">
-                Complete Profile
+                Continue to Subscription
               </Button>
             </form>
           </Form>

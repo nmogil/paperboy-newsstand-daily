@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Menu, X, Bell, User } from 'lucide-react';
+import { Menu, X, Bell, User, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -22,6 +21,15 @@ const Header = () => {
           <a href="#how-it-works" className="font-medium no-underline hover:text-newsprint-red transition-colors">How It Works</a>
           <a href="#pricing" className="font-medium no-underline hover:text-newsprint-red transition-colors">Pricing</a>
           <a href="#faq" className="font-medium no-underline hover:text-newsprint-red transition-colors">FAQ</a>
+          <a 
+            href="https://github.com/nmogil/paperboy" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="font-medium no-underline hover:text-newsprint-red transition-colors flex items-center gap-1"
+          >
+            <Github size={18} />
+            <span>GitHub</span>
+          </a>
           <Button className="bg-newsprint text-paper hover:bg-newsprint-light" asChild>
             <Link to="/auth">Sign In</Link>
           </Button>
@@ -45,6 +53,16 @@ const Header = () => {
             <a href="#how-it-works" className="p-2 font-medium no-underline hover:bg-paper-dark rounded" onClick={() => setIsMenuOpen(false)}>How It Works</a>
             <a href="#pricing" className="p-2 font-medium no-underline hover:bg-paper-dark rounded" onClick={() => setIsMenuOpen(false)}>Pricing</a>
             <a href="#faq" className="p-2 font-medium no-underline hover:bg-paper-dark rounded" onClick={() => setIsMenuOpen(false)}>FAQ</a>
+            <a 
+              href="https://github.com/nmogil/paperboy" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="p-2 font-medium no-underline hover:bg-paper-dark rounded flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Github size={18} />
+              <span>GitHub</span>
+            </a>
             <Button className="bg-newsprint text-paper hover:bg-newsprint-light w-full" asChild>
               <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
             </Button>
