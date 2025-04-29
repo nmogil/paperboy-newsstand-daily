@@ -1,7 +1,7 @@
 project_id = "ovnpankwmmrmhqkxsqqq"
 [functions.create-checkout-session]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/create-checkout-session/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
@@ -12,7 +12,7 @@ entrypoint = "./functions/create-checkout-session/index.ts"
 
 [functions.stripe-webhooks]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/stripe-webhooks/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx

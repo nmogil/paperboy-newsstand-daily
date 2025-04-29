@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { useToast as useShadcnToast } from "@/hooks/use-toast";
 
 type AuthFormData = {
   email: string;
@@ -21,7 +22,9 @@ const Auth = () => {
   
   const [isLogin, setIsLogin] = useState(mode !== 'signup');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { toast: shadcnToast } = useShadcnToast();
   const form = useForm<AuthFormData>({
     defaultValues: {
       email: '',
@@ -30,26 +33,63 @@ const Auth = () => {
     }
   });
 
-  // Update mode when URL changes
   useEffect(() => {
     setIsLogin(mode !== 'signup');
   }, [mode]);
 
+  const initiateCheckout = async (accessToken: string) => {
+    setIsSubmitting(true);
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) 
+        throw new Error(data.error || 'Failed to create checkout session.');
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error: any) {
+      console.error('Checkout initiation error after login:', error);
+      shadcnToast({
+        title: 'Checkout Error',
+        description: error.message || 'Could not proceed to checkout. Please try again from the pricing page.',
+        variant: 'destructive',
+      });
+      navigate('/');
+      setIsSubmitting(false);
+    }
+  };
+
   const onSubmit = async (data: AuthFormData) => {
+    setIsSubmitting(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: loginData, error } = await supabase.auth.signInWithPassword({
           email: data.email,
           password: data.password
         });
 
         if (error) throw error;
+        if (!loginData.session) throw new Error('Login session not found');
         
         toast.success('Logged in successfully');
         
-        // Redirect to the specified redirect path or default
-        if (redirect === 'pricing') {
-          navigate('/subscribe');
+        if (redirect === 'checkout') {
+          await initiateCheckout(loginData.session.access_token);
+          return;
+        } else if (redirect === 'pricing') {
+          navigate('/');
         } else if (redirect) {
           navigate(`/${redirect}`);
         } else {
@@ -77,6 +117,7 @@ const Auth = () => {
     } catch (error: any) {
       console.error('Auth error:', error);
       toast.error(error.message || 'An error occurred during authentication');
+      setIsSubmitting(false);
     }
   };
 
@@ -165,8 +206,12 @@ const Auth = () => {
               )}
             />
             
-            <Button type="submit" className="w-full">
-              {isLogin ? 'Log In' : 'Create Account'}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Processing..."
+                : isLogin
+                ? "Log In"
+                : "Create Account"}
             </Button>
           </form>
         </Form>

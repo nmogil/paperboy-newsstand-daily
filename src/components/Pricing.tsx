@@ -1,6 +1,6 @@
 import { Check, ArrowRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -10,6 +10,7 @@ const Pricing = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -39,8 +40,8 @@ const Pricing = () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !session) {
-        // If not logged in, redirect to auth page
-        window.location.href = '/auth?mode=signup&redirect=pricing';
+        // If not logged in, navigate to auth page, indicating checkout is the next step
+        navigate('/auth?mode=signup&redirect=checkout');
         return;
       }
       

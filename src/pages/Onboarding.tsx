@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
+import { useToast as useShadcnToast } from "@/hooks/use-toast"; // For checkout errors
 
 type OnboardingFormData = {
   name: string;
@@ -16,6 +17,8 @@ type OnboardingFormData = {
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { toast: shadcnToast } = useShadcnToast(); // For checkout errors
+  const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state
   const form = useForm<OnboardingFormData>({
     defaultValues: {
       name: '',
@@ -24,16 +27,52 @@ const Onboarding = () => {
     }
   });
 
-  const onSubmit = async (data: OnboardingFormData) => {
+  // Function to initiate checkout
+  const initiateCheckout = async (accessToken: string) => {
     try {
-      const session = await supabase.auth.getSession();
-      const userId = session.data.session?.user.id;
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.error || 'Failed to create checkout session.');
+      if (data.url) {
+        window.location.href = data.url; // Redirect to Stripe
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error: any) {
+      console.error('Checkout initiation error after onboarding:', error);
+      shadcnToast({
+        title: 'Checkout Error',
+        description: error.message || 'Could not proceed to checkout automatically. Please visit the pricing page to subscribe.',
+        variant: 'destructive',
+      });
+      navigate('/'); // Go home if checkout fails
+      setIsSubmitting(false);
+    }
+  };
 
-      if (!userId) {
+  const onSubmit = async (data: OnboardingFormData) => {
+    setIsSubmitting(true); // Set loading state
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
         throw new Error('No authenticated user found');
       }
+      const userId = session.user.id;
 
-      const { error } = await supabase
+      // Update Profile
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({
           name: data.name,
@@ -42,13 +81,18 @@ const Onboarding = () => {
         })
         .eq('user_id', userId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       toast.success('Profile updated successfully');
-      navigate('/#pricing');
+
+      // Instead of navigating to pricing, initiate checkout
+      await initiateCheckout(session.access_token);
+      // initiateCheckout handles redirect or error display
     } catch (error: any) {
-      toast.error(error.message || 'An error occurred');
+      toast.error(error.message || 'An error occurred updating profile');
+      setIsSubmitting(false); // Clear loading on error
     }
+    // Don't clear loading on successful redirect
   };
 
   return (
@@ -106,8 +150,8 @@ const Onboarding = () => {
                 )}
               />
               
-              <Button type="submit" className="w-full">
-                Continue to Subscription
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Processing..." : "Continue to Subscription"}
               </Button>
             </form>
           </Form>
