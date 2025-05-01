@@ -12,7 +12,6 @@ import { useToast as useShadcnToast } from "@/hooks/use-toast";
 type AuthFormData = {
   email: string;
   password: string;
-  name?: string;
 };
 
 const Auth = () => {
@@ -28,8 +27,7 @@ const Auth = () => {
   const form = useForm<AuthFormData>({
     defaultValues: {
       email: '',
-      password: '',
-      name: ''
+      password: ''
     }
   });
 
@@ -98,12 +96,7 @@ const Auth = () => {
       } else {
         const { error } = await supabase.auth.signUp({
           email: data.email,
-          password: data.password,
-          options: {
-            data: {
-              name: data.name || ''
-            }
-          }
+          password: data.password
         });
 
         if (error) {
@@ -111,8 +104,8 @@ const Auth = () => {
           throw error;
         }
         
-        toast.success('Account created successfully!');
-        navigate('/onboarding');
+        toast.success('Account created! Please check your email to confirm.');
+        setIsSubmitting(false);
       }
     } catch (error: any) {
       console.error('Auth error:', error);
@@ -134,23 +127,6 @@ const Auth = () => {
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {!isLogin && (
-              <FormField
-                control={form.control}
-                name="name"
-                rules={{ required: !isLogin ? 'Name is required' : false }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            
             <FormField
               control={form.control}
               name="email"
