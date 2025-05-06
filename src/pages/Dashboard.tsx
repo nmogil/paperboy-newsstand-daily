@@ -15,7 +15,7 @@ type Profile = {
   title: string | null;
   goals: string | null;
   subscription_status: string;
-  trial_end: string | null; // ISO string format from DB
+  trial_end?: string | null; // Make optional with ?
   stripe_customer_id?: string;
   stripe_subscription_id?: string;
 };
@@ -29,33 +29,60 @@ const Dashboard = () => {
   const { toast: shadcnToast } = useShadcnToast();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      
-      if (!data.session) {
-        navigate('/auth');
+    const checkAuthAndSubscription = async () => {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError || !sessionData.session) {
+        navigate("/auth");
         return;
       }
-      
-      const userId = data.session.user.id;
-      
-      const { data: profileData, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-      
-      if (error) {
-        console.error('Error fetching profile:', error);
-      } else {
-        setProfile(profileData);
+
+      const userId = sessionData.session.user.id;
+
+      // Check if we're arriving from payment-success page with pending subscription
+      const fromPaymentSuccess = sessionStorage.getItem('from_payment_success');
+      if (fromPaymentSuccess) {
+        // Clear the flag
+        sessionStorage.removeItem('from_payment_success');
+        
+        // Show a temporary status message 
+        toast.info("Checking subscription status...");
+        
+        // Wait a bit longer for webhook to process
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
-      
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("*") // Select all fields to match the Profile type
+        .eq("user_id", userId)
+        .single();
+
+      if (profileError) {
+        console.error("Error fetching profile on dashboard:", profileError);
+        // Handle error appropriately - maybe show an error message
+        setLoading(false);
+        return;
+      }
+
+      // Check subscription status without redirecting
+      const isActive = profileData?.subscription_status === "active";
+      const isTrialing = profileData?.subscription_status === "trialing";
+
+      // Only redirect to onboarding if profile is incomplete
+      if (!profileData?.name) {
+        console.log("User profile incomplete, redirecting to onboarding.");
+        toast.info("Please complete your profile setup.");
+        navigate("/onboarding");
+        return;
+      }
+
+      setProfile(profileData);
       setLoading(false);
     };
-    
-    checkAuth();
-  }, [navigate]);
+
+    checkAuthAndSubscription();
+  }, [navigate]); // Add navigate to dependency array
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -214,93 +241,120 @@ const Dashboard = () => {
     }
   };
 
-  const renderSubscriptionInfo = () => {
-    if (!profile) return null;
-
-    const status = profile.subscription_status;
-    const trialEnd = profile.trial_end ? parseISO(profile.trial_end) : null;
-    const now = new Date();
-    const isTrialing = status === 'trialing' && trialEnd && trialEnd > now;
-
-    let trialDaysLeft: number | null = null;
-    if (isTrialing && trialEnd) {
-      trialDaysLeft = differenceInDays(trialEnd, now);
-    }
-
-    return (
-      <div className="space-y-2">
-        <p><span className="font-medium">Subscription Status:</span> <span className={`font-semibold ${isTrialing || status === 'active' ? 'text-green-700' : 'text-red-700'}`}>{status}</span></p>
-        {isTrialing && trialDaysLeft !== null && (
-          <p className="text-sm text-newsprint-light">
-            Your free trial ends in {trialDaysLeft} day{trialDaysLeft !== 1 ? 's' : ''} (on {trialEnd?.toLocaleDateString()}).
-          </p>
-        )}
-      </div>
-    );
-  };
-
-  if (loading) {
-    return (
-      <AuthenticatedLayout>
-        <div className="flex items-center justify-center">
-          <div className="text-xl">Loading...</div>
-        </div>
-      </AuthenticatedLayout>
-    );
-  }
-
   return (
     <AuthenticatedLayout>
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Your Dashboard</h1>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
-          <div className="space-y-2">
-            <p><span className="font-medium">Name:</span> {profile?.name || 'Not set'}</p>
-            <p><span className="font-medium">Email:</span> {profile?.email || 'Not set'}</p>
-            <p><span className="font-medium">Title:</span> {profile?.title || 'Not set'}</p>
-            <p><span className="font-medium">Goals:</span> {profile?.goals || 'Not set'}</p>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-newsprint-red mx-auto"></div>
+            <p className="mt-4 text-newsprint-light">Loading your dashboard...</p>
           </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4">Your Subscription</h2>
-          {renderSubscriptionInfo()}
-          <div className="mt-4 space-x-2">
-            <Button onClick={() => navigate('/onboarding')}>
-              Edit Profile
-            </Button>
-            {(profile?.subscription_status === 'active' || profile?.subscription_status === 'trialing') && (
-              <Button onClick={handleManageSubscription} disabled={isPortalLoading}>
-                {isPortalLoading ? 'Loading...' : 'Manage Subscription'}
-              </Button>
+        ) : (
+          <>
+            {profile && (profile.subscription_status === 'active' || profile.subscription_status === 'trialing') ? (
+              // Subscribed user view - your existing dashboard content
+              <div className="space-y-8">
+                <div className="bg-paper-aged p-6 rounded-sm border border-newsprint/10 shadow-sm">
+                  <h1 className="text-3xl font-bold font-display mb-2">Welcome, {profile?.name || 'Reader'}!</h1>
+                  <p className="text-lg text-newsprint-light mb-4">
+                    {profile.subscription_status === 'trialing' ? (
+                      <>
+                        You're currently on a trial subscription
+                        {profile.trial_end && (
+                          <>
+                            {" "}that will end in{" "}
+                            <span className="font-bold text-newsprint-red">
+                              {Math.max(0, differenceInDays(parseISO(profile.trial_end), new Date()))}
+                            </span>{" "}
+                            days
+                          </>
+                        )}
+                        .
+                      </>
+                    ) : (
+                      <>Thank you for being a Paperboy subscriber!</>
+                    )}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    <Button 
+                      onClick={handleManageSubscription}
+                      disabled={isPortalLoading}
+                    >
+                      {isPortalLoading ? 'Loading...' : 'Manage Subscription'}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate('/onboarding')}
+                    >
+                      Edit Profile
+                    </Button>
+                    {/* Debug button, could be removed in production */}
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDebugAuth}
+                    >
+                      Debug Auth
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Rest of your dashboard UI for subscribed users */}
+              </div>
+            ) : (
+              // Unsubscribed user view
+              <div className="space-y-8">
+                <div className="bg-paper-aged p-6 rounded-sm border border-newsprint/10 shadow-sm">
+                  <h1 className="text-3xl font-bold font-display mb-2">Welcome, {profile?.name || 'Reader'}!</h1>
+                  <p className="text-lg text-newsprint-light mb-4">
+                    Your account is not currently subscribed to Paperboy.
+                  </p>
+                  <div className="bg-paper p-4 border border-newsprint-red/30 rounded-sm mb-4">
+                    <h2 className="text-xl font-bold font-display text-newsprint-red mb-2">
+                      Subscribe to Access Full Features
+                    </h2>
+                    <p className="text-newsprint mb-4">
+                      Subscribe today to unlock all of Paperboy's premium features and content.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button 
+                        className="w-full md:w-auto"
+                        onClick={handleSubscribeNow}
+                        disabled={isCheckoutLoading}
+                      >
+                        {isCheckoutLoading ? 'Loading...' : 'Subscribe Now'}
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => navigate('/onboarding')}
+                      >
+                        Edit Profile
+                      </Button>
+                      {/* Debug button, could be removed in production */}
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDebugAuth}
+                      >
+                        Debug Auth
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Limited dashboard content for unsubscribed users */}
+                <div className="bg-paper p-6 rounded-sm border border-newsprint/10 shadow-sm">
+                  <h2 className="text-2xl font-bold font-display mb-4">Limited Preview</h2>
+                  <p className="text-newsprint-light mb-4">
+                    This is a preview of what's available with a full subscription.
+                  </p>
+                  {/* Add some preview content or teaser features here */}
+                </div>
+              </div>
             )}
-            {(profile?.subscription_status !== 'active' && profile?.subscription_status !== 'trialing') && (
-              <Button 
-                onClick={handleSubscribeNow} 
-                disabled={isCheckoutLoading}
-                className="bg-newsprint-red hover:bg-newsprint-red/90 text-white"
-              >
-                {isCheckoutLoading ? 'Loading...' : 'Subscribe Now'}
-              </Button>
-            )}
-            <Button 
-              onClick={handleDebugAuth} 
-              variant="outline"
-              size="sm"
-            >
-              Debug Auth
-            </Button>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Your Paper Recommendations</h2>
-          <p className="text-gray-500">No recommendations yet. Stay tuned!</p>
-        </div>
+          </>
+        )}
       </div>
     </AuthenticatedLayout>
   );

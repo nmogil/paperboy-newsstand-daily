@@ -94,8 +94,7 @@ serve(async (req) => {
       ],
       success_url: successUrl,
       cancel_url: cancelUrl,
-      // IMPORTANT: Use client_reference_id to link session back to Supabase user ID in webhooks
-      client_reference_id: user.id,
+      client_reference_id: user.id, // VERY IMPORTANT for webhooks
       subscription_data: {
         metadata: { supabase_user_id: user.id }, // Also add metadata to subscription
       },

@@ -27,78 +27,80 @@ const Onboarding = () => {
     }
   });
 
-  // Function to initiate checkout
-  const initiateCheckout = async (accessToken: string) => {
-    try {
-      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
-      const response = await fetch(
-        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.error || 'Failed to create checkout session.');
-      if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe
-      } else {
-        throw new Error('No checkout URL received');
-      }
-    } catch (error: any) {
-      console.error('Checkout initiation error after onboarding:', error);
-      shadcnToast({
-        title: 'Checkout Error',
-        description: error.message || 'Could not proceed to checkout automatically. Please visit the pricing page to subscribe.',
-        variant: 'destructive',
-      });
-      navigate('/'); // Go home if checkout fails
-      setIsSubmitting(false);
-    }
-  };
-
   const onSubmit = async (data: OnboardingFormData) => {
-    setIsSubmitting(true); // Set loading state
+    setIsSubmitting(true);
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+
       if (sessionError || !session) {
-        throw new Error('No authenticated user found');
+        // Should not happen if they just signed up, but good practice
+        toast.error('Authentication error. Please log in again.');
+        navigate('/auth');
+        setIsSubmitting(false);
+        return;
       }
       const userId = session.user.id;
 
-      // Update Profile
+      // Update Profile first
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
           name: data.name,
           title: data.title,
           goals: data.goals
+          // DO NOT update status here, let webhook handle it
         })
         .eq('user_id', userId);
 
       if (updateError) throw updateError;
 
-      toast.success('Profile updated successfully');
+      // Profile updated, now initiate checkout
+      console.log("Profile updated, attempting to create checkout session...");
 
-      // Instead of navigating to pricing, initiate checkout
-      await initiateCheckout(session.access_token);
-      // initiateCheckout handles redirect or error display
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          // No body needed if the function gets user from token
+        }
+      );
+
+      console.log("Checkout session response status:", response.status);
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error("Checkout session creation failed:", responseData);
+        throw new Error(responseData.error || 'Failed to create checkout session.');
+      }
+
+      if (responseData.url) {
+        console.log("Redirecting to Stripe:", responseData.url);
+        window.location.href = responseData.url; // Redirect to Stripe
+        // Don't setIsSubmitting(false) here as we are navigating away
+      } else {
+        throw new Error('No checkout URL received');
+      }
+
     } catch (error: any) {
-      toast.error(error.message || 'An error occurred updating profile');
-      setIsSubmitting(false); // Clear loading on error
+      console.error("Onboarding/Checkout initiation error:", error);
+      toast.error(error.message || 'An error occurred during setup.');
+      setIsSubmitting(false); // Stop loading on error
     }
-    // Don't clear loading on successful redirect
   };
 
   return (
     <AuthenticatedLayout>
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-md p-8 space-y-6 bg-paper shadow-md rounded-sm border border-newsprint/10">
+        <div className="w-full max-w-lg p-8 space-y-6 bg-paper shadow-md rounded-sm border border-newsprint/10">
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+            <p className="font-bold">Account Created!</p>
+            <p>Please complete your profile and subscription setup below. You'll need to confirm your email address afterwards to activate your account fully.</p>
+          </div>
           <h2 className="text-2xl font-bold text-center font-display">
             Complete Your Paperboy Profile
           </h2>
@@ -150,8 +152,8 @@ const Onboarding = () => {
                 )}
               />
               
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Processing..." : "Continue to Subscription"}
+              <Button type="submit" className="w-full btn-subscribe" disabled={isSubmitting}>
+                {isSubmitting ? "Processing..." : "Proceed to Subscription"}
               </Button>
             </form>
           </Form>
