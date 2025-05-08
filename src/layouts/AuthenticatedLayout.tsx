@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Home, Settings, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,12 +13,60 @@ interface AuthenticatedLayoutProps {
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  useEffect(() => {
+    const checkAuthAndRedirect = async () => {
+      setIsLoading(true);
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error getting session in AuthenticatedLayout:", error);
+        toast.error("Session error, please log in again.");
+        navigate('/auth');
+        return;
+      }
+
+      if (!session) {
+        toast.info('Please log in to access this page.');
+        navigate('/auth');
+        return;
+      }
+
+      const user = session.user;
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('onboarding_complete, name, title, goals')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('AuthenticatedLayout: Profile fetch error:', profileError.message);
+        toast.error('Error fetching your profile. Please try logging in again.');
+        navigate('/auth');
+        return;
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuthAndRedirect();
+  }, [navigate, location.pathname]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast.success('Logged out successfully');
     navigate('/auth');
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-paper">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-newsprint-red"></div>
+        <p className="ml-4 text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-paper">

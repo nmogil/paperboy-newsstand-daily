@@ -14,15 +14,49 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is logged in, if so redirect to dashboard
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        navigate('/dashboard');
+    const checkSessionAndRedirect = async () => {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error("Error getting session on Index page:", sessionError);
+        return; // Stay on index page if error
+      }
+
+      if (sessionData.session) {
+        const user = sessionData.session.user;
+        try {
+          // NOTE: If you encounter TypeScript errors about properties not existing on 'profile',
+          // please ensure your Supabase generated types are up-to-date after schema changes.
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('onboarding_complete') // Only need this flag here
+            .eq('user_id', user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Profile fetch error on Index page:', profileError);
+            return; // Stay on index if profile fetch fails
+          }
+
+          if (profile && profile.onboarding_complete === true) {
+            navigate('/dashboard');
+          } else {
+            // If profile doesn't exist, or onboarding is not complete (false or null)
+            // User should go through onboarding. If they are on Index, this implies they might be trying to bypass.
+            // Or they are an existing user who hasn't completed new onboarding flow.
+            // Navigating to /onboarding ensures they complete it.
+            navigate('/onboarding');
+          }
+        } catch (e) {
+          console.error("Error during profile check/redirect on Index page:", e);
+          // Stay on index page if error
+        }
+      } else {
+        // No session, user stays on Index page (public marketing page)
       }
     };
 
-    checkSession();
+    checkSessionAndRedirect();
   }, [navigate]);
 
   return (

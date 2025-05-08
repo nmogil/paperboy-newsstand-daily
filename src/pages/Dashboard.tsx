@@ -58,6 +58,10 @@ const Dashboard = () => {
         .eq("user_id", userId)
         .single();
 
+      console.log("Dashboard Debug: userId", userId);
+      console.log("Dashboard Debug: profileData", profileData);
+      console.log("Dashboard Debug: profileError", profileError);
+
       if (profileError) {
         console.error("Error fetching profile on dashboard:", profileError);
         // Handle error appropriately - maybe show an error message
@@ -68,14 +72,6 @@ const Dashboard = () => {
       // Check subscription status without redirecting
       const isActive = profileData?.subscription_status === "active";
       const isTrialing = profileData?.subscription_status === "trialing";
-
-      // Only redirect to onboarding if profile is incomplete
-      if (!profileData?.name) {
-        console.log("User profile incomplete, redirecting to onboarding.");
-        toast.info("Please complete your profile setup.");
-        navigate("/onboarding");
-        return;
-      }
 
       setProfile(profileData);
       setLoading(false);
@@ -256,6 +252,11 @@ const Dashboard = () => {
               <div className="space-y-8">
                 <div className="bg-paper-aged p-6 rounded-sm border border-newsprint/10 shadow-sm">
                   <h1 className="text-3xl font-bold font-display mb-2">Welcome, {profile?.name || 'Reader'}!</h1>
+                  {!profile?.name && (
+                    <p className="text-sm text-newsprint-light mb-3">
+                      Complete your profile to personalize your experience! <Link to="/onboarding" className="underline hover:text-newsprint-red">Go to Profile Setup</Link>.
+                    </p>
+                  )}
                   <p className="text-lg text-newsprint-light mb-4">
                     {profile.subscription_status === 'trialing' ? (
                       <>
@@ -307,6 +308,11 @@ const Dashboard = () => {
               <div className="space-y-8">
                 <div className="bg-paper-aged p-6 rounded-sm border border-newsprint/10 shadow-sm">
                   <h1 className="text-3xl font-bold font-display mb-2">Welcome, {profile?.name || 'Reader'}!</h1>
+                  {!profile?.name && (
+                    <p className="text-sm text-newsprint-light mb-3">
+                      Complete your profile to personalize your experience! <Link to="/onboarding" className="underline hover:text-newsprint-red">Go to Profile Setup</Link>.
+                    </p>
+                  )}
                   <p className="text-lg text-newsprint-light mb-4">
                     Your account is not currently subscribed to Paperboy.
                   </p>

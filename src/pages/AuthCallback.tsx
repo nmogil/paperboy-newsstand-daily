@@ -10,76 +10,80 @@ const AuthCallback = () => {
   const redirect = searchParams.get('redirect');
   const { toast: shadcnToast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('Completing Sign In...');
 
   useEffect(() => {
-    // Handle the OAuth callback
     const handleAuthCallback = async () => {
       setLoading(true);
+      setMessage('Processing authentication...');
       try {
-        // When redirected from OAuth provider, the URL will contain a hash with the session info
-        // Supabase client will automatically handle this to set up the session
-        const { data, error } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
-        if (error) throw error;
+        if (sessionError) throw sessionError;
         
-        if (data?.session) {
+        if (sessionData?.session) {
           toast.success('Logged in successfully');
+          setMessage('Fetching your profile...');
+
+          const user = sessionData.session.user;
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('name, title, goals, onboarding_complete, subscription_status')
+            .eq('user_id', user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') { // PGRST116: row not found
+            // If profile genuinely not found and it's not just a new user case,
+            // this is an issue. However, a profile should be created by a trigger.
+            // For now, we'll assume a trigger handles profile creation.
+            // If it doesn't, user will be stuck or redirected to onboarding.
+            console.error('Profile fetch error:', profileError);
+            // Potentially redirect to an error page or show a more specific error
+          }
           
-          // Handle redirect logic similar to regular login
-          if (redirect === 'checkout') {
-            // Handle checkout redirection if needed
-            const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
-            const response = await fetch(
-              `${SUPABASE_URL}/functions/v1/create-checkout-session`,
-              {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${data.session.access_token}`,
-                  'Content-Type': 'application/json',
-                },
-              }
-            );
-            const checkoutData = await response.json();
-            if (!response.ok) 
-              throw new Error(checkoutData.error || 'Failed to create checkout session.');
-            if (checkoutData.url) {
-              window.location.href = checkoutData.url;
-              return;
-            } else {
-              throw new Error('No checkout URL received');
-            }
-          } else if (redirect === 'pricing') {
-            navigate('/');
-          } else if (redirect) {
-            navigate(`/${redirect}`);
+          // Decision logic for redirection
+          // A new user might not have a profile record yet, or it might be empty.
+          // The onboarding_complete flag is the primary determinant.
+          // Also check for essential profile fields if the flag isn't robustly set for all users yet.
+          const isProfilePartiallyComplete = profile?.name && profile?.title && profile?.goals;
+
+          if (!profile || !profile.onboarding_complete) {
+             setMessage('Redirecting to onboarding...');
+            navigate('/onboarding');
           } else {
+            // Onboarding is complete, and we assume subscription is handled
+            // (or not a blocker for dashboard access post-onboarding step)
+            setMessage('Redirecting to dashboard...');
             navigate('/dashboard');
           }
+
         } else {
-          // If there's no session, the authentication may have failed
           throw new Error("Authentication failed. No session established.");
         }
       } catch (error: any) {
         console.error('Auth callback error:', error);
+        setMessage('Authentication Error');
         shadcnToast({
           title: 'Authentication Error',
-          description: error.message || 'Failed to complete authentication',
+          description: error.message || 'Failed to complete authentication. Please try again.',
           variant: 'destructive',
         });
         navigate('/auth');
       } finally {
-        setLoading(false);
+        // Set loading to false only if not navigating immediately or if there's a message display period
+        // For this example, navigation happens quickly, so visual loading state change might be brief.
+        // setLoading(false); // Could be uncommented if there's a noticeable delay before navigate
       }
     };
 
     handleAuthCallback();
-  }, [navigate, redirect, shadcnToast]);
+  }, [navigate, redirect, shadcnToast]); // `redirect` is kept if other use cases for it exist
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-paper-dark">
       <div className="w-full max-w-md p-8 space-y-6 bg-paper shadow-md rounded-sm border border-newsprint/10 text-center">
         <h2 className="text-2xl font-bold font-display">
-          {loading ? 'Completing Sign In...' : 'Sign In Complete'}
+          {message}
         </h2>
         {loading && (
           <div className="flex justify-center">
@@ -88,7 +92,7 @@ const AuthCallback = () => {
         )}
         <p className="text-newsprint-light">
           {loading 
-            ? 'Please wait while we authenticate your account...'
+            ? 'Please wait while we process your sign in...'
             : 'Redirecting you...'}
         </p>
       </div>
