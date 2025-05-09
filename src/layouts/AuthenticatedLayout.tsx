@@ -91,13 +91,13 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
                 </Button>
                 
                 <Button 
-                  variant={location.pathname === '/onboarding' ? 'default' : 'ghost'} 
+                  variant={location.pathname === '/account' ? 'default' : 'ghost'}
                   size="sm"
                   asChild
                 >
-                  <Link to="/onboarding" className="flex items-center gap-2">
-                    <User size={18} />
-                    <span>Profile</span>
+                  <Link to="/account" className="flex items-center gap-2">
+                    <Settings size={18} />
+                    <span>Account Settings</span>
                   </Link>
                 </Button>
               </div>
