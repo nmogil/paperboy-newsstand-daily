@@ -25,3 +25,9 @@ dist-ssr
 .env
 .cursor
 .vscode
+
+# Local environment variables
+.env
+.env*.local
+.env.*.local
+!\.env.example
