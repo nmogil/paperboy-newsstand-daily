@@ -43,6 +43,7 @@ export type Database = {
           goals: string | null
           id: string
           name: string | null
+          onboarding_complete: boolean | null
           stripe_customer_id: string | null
           subscription_status: string
           title: string | null
@@ -55,6 +56,7 @@ export type Database = {
           goals?: string | null
           id?: string
           name?: string | null
+          onboarding_complete?: boolean | null
           stripe_customer_id?: string | null
           subscription_status?: string
           title?: string | null
@@ -67,6 +69,7 @@ export type Database = {
           goals?: string | null
           id?: string
           name?: string | null
+          onboarding_complete?: boolean | null
           stripe_customer_id?: string | null
           subscription_status?: string
           title?: string | null

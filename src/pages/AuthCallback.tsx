@@ -48,8 +48,8 @@ const AuthCallback = () => {
           const isProfilePartiallyComplete = profile?.name && profile?.title && profile?.goals;
 
           if (!profile || !profile.onboarding_complete) {
-             setMessage('Redirecting to onboarding...');
-            navigate('/onboarding');
+             setMessage('Redirecting to your account page...');
+            navigate('/account');
           } else {
             // Onboarding is complete, and we assume subscription is handled
             // (or not a blocker for dashboard access post-onboarding step)

@@ -37,11 +37,11 @@ const Auth = () => {
           }
 
           if (!profile || profile.onboarding_complete === false) {
-            navigate('/onboarding');
+            navigate('/account');
           } else if (profile && profile.onboarding_complete === true) {
             navigate('/dashboard');
           } else {
-            navigate('/onboarding');
+            navigate('/account');
           }
         } catch (e) {
           console.error("Error during profile check/redirect on Auth page:", e);

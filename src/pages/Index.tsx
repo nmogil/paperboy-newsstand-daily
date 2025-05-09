@@ -45,7 +45,7 @@ const Index = () => {
             // User should go through onboarding. If they are on Index, this implies they might be trying to bypass.
             // Or they are an existing user who hasn't completed new onboarding flow.
             // Navigating to /onboarding ensures they complete it.
-            navigate('/onboarding');
+            navigate('/account');
           }
         } catch (e) {
           console.error("Error during profile check/redirect on Index page:", e);

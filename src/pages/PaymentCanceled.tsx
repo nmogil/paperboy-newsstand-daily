@@ -18,7 +18,7 @@ const PaymentCanceled = () => {
           You can try again or contact support if you faced any issues.
         </p>
         <div className="space-y-3">
-          <Button className="w-full btn-primary" onClick={() => navigate('/onboarding')}>
+          <Button className="w-full btn-primary" onClick={() => navigate('/account')}>
             Retry Subscription Setup
           </Button>
           <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
