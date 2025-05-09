@@ -55,12 +55,6 @@ const Onboarding = () => {
         setProfileData(fetchedProfile); // Store fetched profile
 
         if (fetchedProfile) {
-          // If onboarding is already complete, AuthenticatedLayout should redirect.
-          // This is an additional safety check.
-          if (fetchedProfile.onboarding_complete === true) {
-            navigate('/dashboard'); // Redirect if somehow landed here and onboarding is done
-            return;
-          }
           form.reset({
             name: fetchedProfile.name || '',
             title: fetchedProfile.title || '',
@@ -91,28 +85,27 @@ const Onboarding = () => {
       }
       const userId = session.user.id;
 
-      // Upsert Profile data
-      // This will update the profile if it exists, or insert it if it doesn't.
-      // The `onboarding_complete` field will use its database default (FALSE) on insert,
-      // and will not be modified here if the record already exists.
       const { error: upsertError } = await supabase
         .from('profiles')
         .upsert({
-          user_id: userId, // Important for conflict resolution and for new inserts
+          user_id: userId,
           name: data.name,
           title: data.title,
           goals: data.goals,
-          // Do not set onboarding_complete here; it defaults to false on new row
-          // and is set to true by webhooks after payment.
-          // Do not update subscription_status here either.
         }, {
-          onConflict: 'user_id', // Specify the column(s) to check for conflicts
+          onConflict: 'user_id',
         })
-        .select(); // .select() is often added to get back the upserted/updated row, optional here if not used
+        .select();
 
       if (upsertError) throw upsertError;
 
-      // Profile updated/created, now initiate checkout
+      if (profileData?.onboarding_complete === true) {
+        toast.success("Profile updated successfully!");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // If onboarding is NOT complete, proceed to checkout
       console.log("Profile updated, attempting to create checkout session...");
 
       const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://ovnpankwmmrmhqkxsqqq.supabase.co';
@@ -188,7 +181,7 @@ const Onboarding = () => {
                   <FormItem>
                     <FormLabel>Your Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} disabled={profileData?.onboarding_complete} />
+                      <Input placeholder="John Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -203,7 +196,7 @@ const Onboarding = () => {
                   <FormItem>
                     <FormLabel>Your Title/Position</FormLabel>
                     <FormControl>
-                      <Input placeholder="Software Engineer" {...field} disabled={profileData?.onboarding_complete} />
+                      <Input placeholder="Software Engineer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -218,27 +211,28 @@ const Onboarding = () => {
                   <FormItem>
                     <FormLabel>Career Goals</FormLabel>
                     <FormControl>
-                      <Input placeholder="Become an AI research expert" {...field} disabled={profileData?.onboarding_complete} />
+                      <Input placeholder="Become an AI research expert" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               
-              {/* Conditional Button */}
-              {(!profileData || profileData.onboarding_complete === false) && 
-               (profileData?.subscription_status !== 'active' && profileData?.subscription_status !== 'trialing') && (
-                <Button type="submit" className="w-full btn-subscribe" disabled={isSubmitting}>
-                  {isSubmitting ? "Processing..." : "Proceed to Subscription"}
+              {/* Conditional Buttons */}
+              {profileData?.onboarding_complete === true ? (
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? "Updating..." : "Update Profile"}
                 </Button>
-              )}
-
-              {/* Message if onboarding is complete but user is still here (should be rare) */}
-              {profileData && profileData.onboarding_complete === true && (
-                <p className="text-center text-newsprint-light">
-                  Your profile is complete. You should be redirected to the dashboard shortly.
-                  If not, <Link to="/dashboard" className="underline">click here to go to your dashboard</Link>.
-                </p>
+              ) : (
+                <>
+                  {/* Original button for users who need to subscribe */}
+                  {(!profileData || profileData.onboarding_complete === false) &&
+                   (profileData?.subscription_status !== 'active' && profileData?.subscription_status !== 'trialing') && (
+                    <Button type="submit" className="w-full btn-subscribe" disabled={isSubmitting}>
+                      {isSubmitting ? "Processing..." : "Proceed to Subscription"}
+                    </Button>
+                  )}
+                </>
               )}
             </form>
           </Form>
