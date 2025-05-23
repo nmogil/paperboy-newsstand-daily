@@ -1,4 +1,4 @@
-![Paperboy Logo](public/paperboy-logo-2.png)
+![Paperboy Logo](https://drive.google.com/uc?export=view&id=1PxX3Z9J9pXqCHcqjieCMphAKggo0ZP5e)
 
 # Paperboy Newsstand Daily
 
