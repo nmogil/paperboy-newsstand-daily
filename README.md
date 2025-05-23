@@ -1,3 +1,5 @@
+![Paperboy Logo](public/paperboy-logo-2.png)
+
 # Paperboy Newsstand Daily
 
 A modern web application built with React, TypeScript, and Supabase.
